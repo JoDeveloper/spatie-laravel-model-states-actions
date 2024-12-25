@@ -88,13 +88,9 @@ abstract class State extends base
         return static::$notification_ability ?? str(static::class)->classBasename()->camel();
     }
 
-    public static function getActionForm(?\App\Eloquent\Model $record = null): array
+    public static function getActionForm(?Model $record = null): array
     {
-        return [
-            Textarea::make('notes')
-                ->translateLabel()
-                ->nullable(),
-        ];
+        return [];
     }
 
     public static function order(): int
@@ -146,10 +142,6 @@ abstract class State extends base
 
     public static function transferToMe(Model $record, User $user, ?array $data = [])
     {
-        if (array_key_exists('notes', $data)) {
-            $record->addStateChangeNotes(static::class, $data['notes']);
-        }
-
         ChangStateService::make($record, $user)
             ->attribute(static::getStateKeyName())
             ->skipAuthorization(static::skipAuthorization())
