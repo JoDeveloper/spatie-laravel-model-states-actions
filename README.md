@@ -1,12 +1,11 @@
-# This is my package spatie-laravel-model-states-actions
+# spatie-laravel-model-states-actions
 
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/abather/spatie-laravel-model-states-actions.svg?style=flat-square)](https://packagist.org/packages/abather/spatie-laravel-model-states-actions)
 [![GitHub Tests Action Status](https://img.shields.io/github/actions/workflow/status/abather/spatie-laravel-model-states-actions/run-tests.yml?branch=main&label=tests&style=flat-square)](https://github.com/abather/spatie-laravel-model-states-actions/actions?query=workflow%3Arun-tests+branch%3Amain)
 [![GitHub Code Style Action Status](https://img.shields.io/github/actions/workflow/status/abather/spatie-laravel-model-states-actions/fix-php-code-style-issues.yml?branch=main&label=code%20style&style=flat-square)](https://github.com/abather/spatie-laravel-model-states-actions/actions?query=workflow%3A"Fix+PHP+code+style+issues"+branch%3Amain)
 [![Total Downloads](https://img.shields.io/packagist/dt/abather/spatie-laravel-model-states-actions.svg?style=flat-square)](https://packagist.org/packages/abather/spatie-laravel-model-states-actions)
 
-This is where your description should go. Limit it to a paragraph or two. Consider adding a small example.
-
+with this package you can display or add actions to your views using state, this package depends on `spatie/laravel-model-states` package.
 ## Installation
 
 You can install the package via composer:
