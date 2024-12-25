@@ -3,11 +3,11 @@
 namespace Abather\SpatieLaravelModelStatesActions;
 
 use App\Eloquent\Authenticatable;
-use Filament\Forms\Components\Textarea;
-use Illuminate\Database\Eloquent\Model;
 use App\Services\ChangStateService;
 use Filament\Actions;
+use Filament\Forms\Components\Textarea;
 use Filament\Tables;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Lang;
 use Spatie\ModelStates\State as base;
 
@@ -28,6 +28,8 @@ abstract class State extends base
     protected static ?string $color = 'primary';
 
     protected static ?bool $skip_authorization = false;
+
+    protected static ?bool $requires_confirmation = true;
 
     //Title will be viewed in tables and resources view/edit pages.
 
@@ -119,7 +121,7 @@ abstract class State extends base
             ->form(fn (Model $record) => static::getActionForm($record))
             ->authorize(fn (Model $record) => static::isAuthorized($user, $record))
             ->action(fn (Model $record, ?array $data) => static::transferToMe($record, $user, $data))
-            ->requiresConfirmation();
+            ->requiresConfirmation(static::requiresConfirmation());
     }
 
     public static function action($user): Actions\Action
@@ -130,7 +132,7 @@ abstract class State extends base
             ->color(static::color())
             ->authorize(fn (Model $record) => static::isAuthorized($user, $record))
             ->action(fn (Model $record, ?array $data) => static::transferToMe($record, $user, $data))
-            ->requiresConfirmation();
+            ->requiresConfirmation(static::requiresConfirmation());
     }
 
     public function display(): Actions\Action
@@ -157,6 +159,11 @@ abstract class State extends base
     public static function skipAuthorization(): bool
     {
         return static::$skip_authorization;
+    }
+
+    public static function requiresConfirmation(): bool
+    {
+        return static::$requires_confirmation;
     }
 
     public static function isAuthorized($user, $record): bool

@@ -4,7 +4,6 @@ namespace Abather\SpatieLaravelModelStatesActions;
 
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
-use Abather\SpatieLaravelModelStatesActions\Commands\SpatieLaravelModelStatesActionsCommand;
 
 class SpatieLaravelModelStatesActionsServiceProvider extends PackageServiceProvider
 {

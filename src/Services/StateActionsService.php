@@ -2,9 +2,9 @@
 
 namespace Abather\SpatieLaravelModelStatesActions\Services;
 
-use Illuminate\Foundation\Auth\User;
-use Illuminate\Database\Eloquent\Model;
 use App\Traits\Makeable;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Foundation\Auth\User;
 
 class StateActionsService
 {

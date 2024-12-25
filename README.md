@@ -157,6 +157,40 @@ class Rejected extends PaymentState
 }
 ```
 
+### action without confirmation modal
+
+if you don't went the conformation modal you can set attribute `$requires_confirmation` to `false` in the state:
+
+```php
+<?php
+
+namespace App\States\Contract;
+
+class Canceled extends ContractState
+{
+    protected static ?bool $requires_confirmation = false;
+}
+```
+
+or change it in the base state class:
+
+```php
+<?php
+
+namespace App\States\Order;
+
+use App\States\State;
+use Spatie\ModelStates\Attributes;
+
+abstract class OrderState extends State
+{
+    protected static ?bool $requires_confirmation = false;
+}
+
+```
+
+this will stop confirmation modal to all states under this class.
+
 ## Testing
 
 ```bash

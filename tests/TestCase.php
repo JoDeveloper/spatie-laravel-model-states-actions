@@ -2,9 +2,9 @@
 
 namespace Abather\SpatieLaravelModelStatesActions\Tests;
 
+use Abather\SpatieLaravelModelStatesActions\SpatieLaravelModelStatesActionsServiceProvider;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Orchestra\Testbench\TestCase as Orchestra;
-use Abather\SpatieLaravelModelStatesActions\SpatieLaravelModelStatesActionsServiceProvider;
 
 class TestCase extends Orchestra
 {
