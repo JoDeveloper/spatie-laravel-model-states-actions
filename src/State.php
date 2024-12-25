@@ -2,12 +2,12 @@
 
 namespace Abather\SpatieLaravelModelStatesActions;
 
-use Illuminate\Foundation\Auth\User;
 use Abather\SpatieLaravelModelStatesActions\Services\ChangStateService;
 use Filament\Actions;
 use Filament\Forms\Components\Textarea;
 use Filament\Tables;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Foundation\Auth\User;
 use Illuminate\Support\Facades\Lang;
 use Spatie\ModelStates\State as base;
 
