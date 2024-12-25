@@ -1,68 +1,161 @@
-# :package_description
+# This is my package spatie-laravel-model-states-actions
 
-[![Latest Version on Packagist](https://img.shields.io/packagist/v/:vendor_slug/:package_slug.svg?style=flat-square)](https://packagist.org/packages/:vendor_slug/:package_slug)
-[![GitHub Tests Action Status](https://img.shields.io/github/actions/workflow/status/:vendor_slug/:package_slug/run-tests.yml?branch=main&label=tests&style=flat-square)](https://github.com/:vendor_slug/:package_slug/actions?query=workflow%3Arun-tests+branch%3Amain)
-[![GitHub Code Style Action Status](https://img.shields.io/github/actions/workflow/status/:vendor_slug/:package_slug/fix-php-code-style-issues.yml?branch=main&label=code%20style&style=flat-square)](https://github.com/:vendor_slug/:package_slug/actions?query=workflow%3A"Fix+PHP+code+style+issues"+branch%3Amain)
-[![Total Downloads](https://img.shields.io/packagist/dt/:vendor_slug/:package_slug.svg?style=flat-square)](https://packagist.org/packages/:vendor_slug/:package_slug)
-<!--delete-->
----
-This repo can be used to scaffold a Laravel package. Follow these steps to get started:
+[![Latest Version on Packagist](https://img.shields.io/packagist/v/abather/spatie-laravel-model-states-actions.svg?style=flat-square)](https://packagist.org/packages/abather/spatie-laravel-model-states-actions)
+[![GitHub Tests Action Status](https://img.shields.io/github/actions/workflow/status/abather/spatie-laravel-model-states-actions/run-tests.yml?branch=main&label=tests&style=flat-square)](https://github.com/abather/spatie-laravel-model-states-actions/actions?query=workflow%3Arun-tests+branch%3Amain)
+[![GitHub Code Style Action Status](https://img.shields.io/github/actions/workflow/status/abather/spatie-laravel-model-states-actions/fix-php-code-style-issues.yml?branch=main&label=code%20style&style=flat-square)](https://github.com/abather/spatie-laravel-model-states-actions/actions?query=workflow%3A"Fix+PHP+code+style+issues"+branch%3Amain)
+[![Total Downloads](https://img.shields.io/packagist/dt/abather/spatie-laravel-model-states-actions.svg?style=flat-square)](https://packagist.org/packages/abather/spatie-laravel-model-states-actions)
 
-1. Press the "Use this template" button at the top of this repo to create a new repo with the contents of this skeleton.
-2. Run "php ./configure.php" to run a script that will replace all placeholders throughout all the files.
-3. Have fun creating your package.
-4. If you need help creating a package, consider picking up our <a href="https://laravelpackage.training">Laravel Package Training</a> video course.
----
-<!--/delete-->
 This is where your description should go. Limit it to a paragraph or two. Consider adding a small example.
-
-## Support us
-
-[<img src="https://github-ads.s3.eu-central-1.amazonaws.com/:package_name.jpg?t=1" width="419px" />](https://spatie.be/github-ad-click/:package_name)
-
-We invest a lot of resources into creating [best in class open source packages](https://spatie.be/open-source). You can support us by [buying one of our paid products](https://spatie.be/open-source/support-us).
-
-We highly appreciate you sending us a postcard from your hometown, mentioning which of our package(s) you are using. You'll find our address on [our contact page](https://spatie.be/about-us). We publish all received postcards on [our virtual postcard wall](https://spatie.be/open-source/postcards).
 
 ## Installation
 
 You can install the package via composer:
 
 ```bash
-composer require :vendor_slug/:package_slug
-```
-
-You can publish and run the migrations with:
-
-```bash
-php artisan vendor:publish --tag=":package_slug-migrations"
-php artisan migrate
-```
-
-You can publish the config file with:
-
-```bash
-php artisan vendor:publish --tag=":package_slug-config"
-```
-
-This is the contents of the published config file:
-
-```php
-return [
-];
-```
-
-Optionally, you can publish the views using
-
-```bash
-php artisan vendor:publish --tag=":package_slug-views"
+composer require abather/spatie-laravel-model-states-actions
 ```
 
 ## Usage
 
+Follow the Doc in [ Laravel-model-states ](https://spatie.be/docs/laravel-model-states/v2/01-introduction),
+but for each State you have to extends `Abather\SpatieLaravelModelStatesActions\State` :
+
 ```php
-$variable = new VendorName\Skeleton();
-echo $variable->echoPhrase('Hello, VendorName!');
+use Abather\SpatieLaravelModelStatesActions\State;
+use Spatie\ModelStates\StateConfig;
+
+abstract class PaymentState extends State
+{   
+    public static function config(): StateConfig
+    {
+        return parent::config()
+            ->default(Pending::class)
+            ->allowTransition(Pending::class, Paid::class)
+            ->allowTransition(Pending::class, Failed::class)
+        ;
+    }
+}
+```
+
+### configure authorization
+
+you can define ability name for each state that well be used to determine if the user can change the state or not as:
+
+```php
+<?php
+
+namespace App\States\Order;
+
+class Canceled extends OrderState
+{
+    protected static ?string $ability = 'cancel';
+}
+```
+
+that mean it well look to ability name called `cancel` in OrderPolicy class.
+
+also you can skip authorization by override the attribute `$skip_authorization = true`
+
+keep in mind that the package also chick if you can transfer to the state using `canTransitionTo(Cancel::class)` that come with Spatie Package you can view it [here](https://spatie.be/docs/laravel-model-states/v2/working-with-transitions/01-configuring-transitions#content-using-transitions)
+
+### Customize Action Icon & Color
+
+you can custom the state color and icon by overriding the attributes `$color` & `$icon`
+
+```php
+<?php
+
+namespace App\States\Contract;
+
+class Canceled extends ContractState
+{
+    protected static ?string $color = 'danger';
+    protected static ?string $icon = 'heroicon-o-cursor-arrow-rays';
+}
+```
+for these attributes you have to follow Filament Doc about each one of them [Icon Doc](https://filamentphp.com/docs/3.x/support/icons), [Color Doc](https://filamentphp.com/docs/3.x/support/colors)
+### Localization
+
+you need to create `states.php` file to translate the state and the structure of each state should be as:
+
+```php
+    'ClassName' => [
+        'title' => '', //This is the name that well be displayed.
+        'label' => '', //This is the action name that used in action button.
+    ],
+```
+
+### Display Current State
+
+if you went to display the current state in Edit or Info List you can do so by adding `state->display()` method to header actions:
+
+```php
+class ViewContract extends ViewRecord
+{
+    protected static string $resource = ContractResource::class;
+
+    protected function getHeaderActions(): array
+    {
+        return [
+            //Other Actions
+            $this->record->state->display(),
+            //Other Actions
+        ];
+    }
+}
+```
+feel free to add it to any place that accept `Filament\Actions\Action` object.
+
+### View actions in Table:
+
+you can view the available actions 'depends on authorizations as states configuration':
+```php
+    public static function table(Table $table): Table
+    {
+        return $table
+            ->columns([])
+            ->actions([
+                    ...StateActionsService::make(static::getModel())->tableActions(),
+            ]);
+    }
+```
+`tableActions()` method well return an array of `Filament\Tables\Actions\Action` objects.
+
+### View actions in any page
+
+you can view the available actions 'depends on authorizations as states configuration' in any resource page:
+```php
+class ViewContract extends ViewRecord
+{
+    protected static string $resource = ContractResource::class;
+
+    protected function getHeaderActions(): array
+    {
+        return [
+            ...StateActionsService::make(Contract::class)
+                ->actions(),
+        ];
+    }
+}
+```
+
+`actions()` will return an array of `Filament\Actions\Action` objects, that mean you can use it any place that accept `Action` object.
+
+### Config ordering actions
+if you went to display available actions in specific order you can do so by overriding `$order` attribute in each State.
+
+```php
+class Approved extends PaymentState
+{
+    public static int $order = 1;    
+}
+```
+
+```php
+class Rejected extends PaymentState
+{
+    public static int $order = 2;
+}
 ```
 
 ## Testing
@@ -85,7 +178,7 @@ Please review [our security policy](../../security/policy) on how to report secu
 
 ## Credits
 
-- [:author_name](https://github.com/:author_username)
+- [Mohammed Aljuraysh](https://github.com/Abather)
 - [All Contributors](../../contributors)
 
 ## License
