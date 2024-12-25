@@ -2,8 +2,8 @@
 
 namespace Abather\SpatieLaravelModelStatesActions;
 
-use App\Eloquent\Authenticatable;
-use App\Services\ChangStateService;
+use Illuminate\Foundation\Auth\User;
+use Abather\SpatieLaravelModelStatesActions\Services\ChangStateService;
 use Filament\Actions;
 use Filament\Forms\Components\Textarea;
 use Filament\Tables;
@@ -144,7 +144,7 @@ abstract class State extends base
             ->disabled();
     }
 
-    public static function transferToMe(Model $record, Authenticatable $user, ?array $data = [])
+    public static function transferToMe(Model $record, User $user, ?array $data = [])
     {
         if (array_key_exists('notes', $data)) {
             $record->addStateChangeNotes(static::class, $data['notes']);
