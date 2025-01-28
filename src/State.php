@@ -4,8 +4,11 @@ namespace Abather\SpatieLaravelModelStatesActions;
 
 use Abather\SpatieLaravelModelStatesActions\Services\ChangStateService;
 use Filament\Actions;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
+use Filament\Infolists\Components\TextEntry;
 use Filament\Tables;
+use Filament\Tables\Columns\TextColumn;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Auth\User;
 use Illuminate\Support\Facades\Lang;
@@ -38,9 +41,9 @@ abstract class State extends base
         return static::translate('title', class_basename(static::class));
     }
 
-    public static function getStateKeyName(): string
+    public static function getStateKeyName(?string $name = null): string
     {
-        return static::$state_key;
+        return $name ?? static::$state_key;
     }
 
     //Label will be viewed for buttons and actions.
@@ -129,6 +132,50 @@ abstract class State extends base
             ->authorize(fn (Model $record) => static::isAuthorized($user, $record))
             ->action(fn (Model $record, ?array $data) => static::transferToMe($record, $user, $data))
             ->requiresConfirmation(static::requiresConfirmation());
+    }
+
+    public static function textColumn(?string $field = null, ?string $label = null): TextColumn
+    {
+        $field = static::getStateKeyName($field);
+
+        return TextColumn::make($field)
+            ->label($label ?? __($field))
+            ->state(fn(?Model $record) => $record->{$field}->title())
+            ->badge()
+            ->color(fn(?Model $record) => $record->{$field}->color());
+    }
+
+    public static function textEntry(?string $field = null, ?string $label = null): TextEntry
+    {
+        $field = static::getStateKeyName($field);
+
+        return TextEntry::make($field)
+            ->label($label ?? __($field))
+            ->state(fn(?Model $record) => $record->{$field}->title())
+            ->badge()
+            ->color(fn(?Model $record) => $record->{$field}->color());
+    }
+
+    public static function formSelect(string $model, ?string $field = null): Select
+    {
+        $field = static::getStateKeyName($field);
+
+        return Select::make($field)
+            ->label($label ?? __($field))
+            ->options(static::getStatesForSelect($model, $field));
+    }
+
+    public static function getStatesForSelect(string $model, ?string $field = null): array
+    {
+        $field = static::getStateKeyName($field);
+
+        $status = [];
+
+        foreach ($model::getStatesFor($field)->toArray() as $state) {
+            $status[$state] = $state::title();
+        }
+
+        return $status;
     }
 
     public function display(): Actions\Action

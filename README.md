@@ -85,6 +85,19 @@ you need to create `states.php` file to translate the state and the structure of
 ```
 
 ### Display Current State
+To display the current state in Table you can use `StateClass::stateTextColumn()` as column in table:
+
+```php
+ public static function table(Table $table): Table
+{
+    return $table
+        ->columns([
+            //Other Columns
+            ContractState::textColumn(),
+            //Other Columns
+        ]);
+}
+```
 
 if you went to display the current state in Edit or Info List you can do so by adding `state->display()` method to header actions:
 
@@ -105,6 +118,35 @@ class ViewContract extends ViewRecord
 ```
 feel free to add it to any place that accept `Filament\Actions\Action` object.
 
+to display the state as normal `TextEntry` inside `InfoList` you can do so by using `StateClass::textEntry()`:
+
+```php
+
+    public static function infolist(Infolist $infolist): Infolist
+    {
+        return $infolist
+            ->schema([
+                //...
+                ContractState::textEntry(),
+                //...
+            ]);
+    }
+
+```
+
+to include the select form filed use `formSelect(static::getModel())` method:
+
+```php
+public static function form(Form $form): Form
+    {
+        return $form
+            ->schema([
+                //....
+                ContractState::formSelect(static::getModel()),
+                //...
+             ]);
+    }
+```
 ### View actions in Table:
 
 you can view the available actions 'depends on authorizations as states configuration':
