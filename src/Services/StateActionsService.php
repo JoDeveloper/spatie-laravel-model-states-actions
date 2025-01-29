@@ -2,7 +2,7 @@
 
 namespace Abather\SpatieLaravelModelStatesActions\Services;
 
-use App\Traits\Makeable;
+use Abather\SpatieLaravelModelStatesActions\Traits\Makeable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Auth\User;
 
