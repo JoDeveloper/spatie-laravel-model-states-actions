@@ -2,8 +2,6 @@
 
 namespace Abather\SpatieLaravelModelStatesActions\Services;
 
-use Filament\Tables\Filters\SelectFilter;
-
 class StateActionsService extends _BaseService
 {
     public function tableActions(): array

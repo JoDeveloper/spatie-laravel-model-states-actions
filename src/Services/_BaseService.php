@@ -3,8 +3,8 @@
 namespace Abather\SpatieLaravelModelStatesActions\Services;
 
 use Abather\SpatieLaravelModelStatesActions\Traits\Makeable;
-use Illuminate\Foundation\Auth\User;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Foundation\Auth\User;
 
 class _BaseService
 {
