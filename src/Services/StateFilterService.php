@@ -2,7 +2,7 @@
 
 namespace Abather\SpatieLaravelModelStatesActions\Services;
 
-use Abather\SpatieLaravelModelStatesActions\Traits\Makeable;
+use Filament\Tables\Filters\SelectFilter;
 
 class StateFilterService extends _BaseService
 {
