@@ -5,7 +5,6 @@ namespace Abather\SpatieLaravelModelStatesActions;
 use Abather\SpatieLaravelModelStatesActions\Services\ChangStateService;
 use Filament\Actions;
 use Filament\Forms\Components\Select;
-use Filament\Forms\Components\Textarea;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Tables;
 use Filament\Tables\Columns\TextColumn;
@@ -51,8 +50,8 @@ abstract class State extends base
 
     protected static function translate(string $key, string $default): string
     {
-        if (Lang::has(static::getTranslationPath().'.'.$key)) {
-            return __(static::getTranslationPath().'.'.$key);
+        if (Lang::has(static::getTranslationPath() . '.' . $key)) {
+            return __(static::getTranslationPath() . '.' . $key);
         }
 
         return $default;
@@ -60,7 +59,7 @@ abstract class State extends base
 
     protected static function getTranslationPath(): string
     {
-        return 'states.'.class_basename(static::class);
+        return 'states.' . class_basename(static::class);
     }
 
     public static function label(): string
@@ -104,7 +103,7 @@ abstract class State extends base
 
     public static function includeToActions(): bool
     {
-        return ! static::excludeFromActions();
+        return !static::excludeFromActions();
     }
 
     public static function excludeFromActions(): bool
@@ -129,9 +128,9 @@ abstract class State extends base
             ->label(static::label())
             ->color(static::color())
             ->icon(static::icon())
-            ->form(fn (Model $record) => static::getActionForm($record))
-            ->authorize(fn (Model $record) => static::isAuthorized($user, $record))
-            ->action(fn (Model $record, ?array $data) => static::transferToMe($record, $user, $data))
+            ->form(fn(Model $record) => static::getActionForm($record))
+            ->authorize(fn(Model $record) => static::isAuthorized($user, $record))
+            ->action(fn(Model $record, ?array $data) => static::transferToMe($record, $user, $data))
             ->requiresConfirmation(static::requiresConfirmation());
     }
 
@@ -139,14 +138,14 @@ abstract class State extends base
     {
         return Actions\Action::make(class_basename(static::class))
             ->label(static::label())
-            ->form(fn (Model $record) => static::getActionForm($record))
+            ->form(fn(Model $record) => static::getActionForm($record))
             ->color(static::color())
-            ->authorize(fn (Model $record) => static::isAuthorized($user, $record))
-            ->action(fn (Model $record, ?array $data) => static::transferToMe($record, $user, $data))
+            ->authorize(fn(Model $record) => static::isAuthorized($user, $record))
+            ->action(fn(Model $record, ?array $data) => static::transferToMe($record, $user, $data))
             ->requiresConfirmation(static::requiresConfirmation());
     }
 
-    public static function textColumn(?string $field = null, ?string $label = null): TextColumn
+    public static function textColumn(?string $field = null, ?string $label = null, bool $without_icon = false): TextColumn
     {
         $field = static::getStateKeyName($field);
 
@@ -154,10 +153,11 @@ abstract class State extends base
             ->label($label ?? __($field))
             ->state(fn(?Model $record) => $record->{$field}->title())
             ->badge()
+            ->when(!$without_icon, fn(TextColumn $compnont) => $compnont->icon(fn(?Model $record) => $record->{$field}->icon()))
             ->color(fn(?Model $record) => $record->{$field}->color());
     }
 
-    public static function textEntry(?string $field = null, ?string $label = null): TextEntry
+    public static function textEntry(?string $field = null, ?string $label = null, bool $without_icon = false): TextEntry
     {
         $field = static::getStateKeyName($field);
 
@@ -165,6 +165,7 @@ abstract class State extends base
             ->label($label ?? __($field))
             ->state(fn(?Model $record) => $record->{$field}->title())
             ->badge()
+            ->when(!$without_icon, fn(TextEntry $compnont) => $compnont->icon(fn(?Model $record) => $record->{$field}->icon()))
             ->color(fn(?Model $record) => $record->{$field}->color());
     }
 
@@ -190,12 +191,12 @@ abstract class State extends base
         return $status;
     }
 
-    public function display(): Actions\Action
+    public function display(bool $without_icon = false): Actions\Action
     {
         return Actions\Action::make(class_basename($this))
             ->label($this->title())
             ->color($this->color())
-            ->icon($this->icon())
+            ->when(!$without_icon, fn(Actions\Action $compnont) => $compnont->icon($this->icon()))
             ->disabled();
     }
 
@@ -219,7 +220,7 @@ abstract class State extends base
 
     public static function isAuthorized($user, $record): bool
     {
-        if (! $record->{static::getStateKeyName()}->canTransitionTo(static::class)) {
+        if (!$record->{static::getStateKeyName()}->canTransitionTo(static::class)) {
             return false;
         }
 
