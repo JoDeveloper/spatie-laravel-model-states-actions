@@ -233,6 +233,24 @@ abstract class OrderState extends State
 
 this will stop confirmation modal to all states under this class.
 
+## Add State Filters To Table
+
+you can include state filters to your table by using `StateFilterService::make(Contract::class)->tableFilter()`as:
+
+```php
+public static function table(Table $table): Table
+    {
+        return $table
+            ->columns([
+                //
+            ])
+            ->filters([
+                StateFilterService::make(static::getModel())
+                    ->tableFilter(),
+            ]);
+    }
+```
+
 ## Testing
 
 ```bash

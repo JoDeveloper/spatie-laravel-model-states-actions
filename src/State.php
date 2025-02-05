@@ -21,6 +21,7 @@ abstract class State extends base
     public static string $state_key = 'state';
 
     public static bool $exclude_from_actions = false;
+    public static bool $exclude_from_filters = false;
 
     protected static ?string $ability = null;
 
@@ -109,6 +110,17 @@ abstract class State extends base
     public static function excludeFromActions(): bool
     {
         return static::$exclude_from_actions;
+    }
+
+    public static function includeToFilters(): bool
+    {
+        return !static::excludeFromActions();
+    }
+
+
+    public static function excludeFromFilters(): bool
+    {
+        return static::$exclude_from_filters;
     }
 
     public static function tableAction($user): Tables\Actions\Action
@@ -207,12 +219,12 @@ abstract class State extends base
 
     public static function isAuthorized($user, $record): bool
     {
-        if (static::skipAuthorization()) {
-            return true;
-        }
-
         if (! $record->{static::getStateKeyName()}->canTransitionTo(static::class)) {
             return false;
+        }
+
+        if (static::skipAuthorization()) {
+            return true;
         }
 
         return $user->can(static::abilityName(), $record);

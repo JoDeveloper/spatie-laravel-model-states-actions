@@ -1,3 +1,5 @@
 # Changelog
 
-All notable changes to `spatie-laravel-model-states-actions` will be documented in this file.
+### v1.0.6:
+- include table filters `StateFilterService::make(static::getModel())->tableFilter()`.
+- prevent State from shown in actions even if the authorization disabled based on `canTransitionTo()` method.
