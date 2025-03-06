@@ -140,6 +140,7 @@ abstract class State extends base
             ->label(static::label())
             ->form(fn (Model $record) => static::getActionForm($record))
             ->color(static::color())
+            ->icon(static::icon())
             ->authorize(fn (Model $record) => static::isAuthorized($user, $record))
             ->action(fn (Model $record, ?array $data) => static::transferToMe($record, $user, $data))
             ->requiresConfirmation(static::requiresConfirmation());
