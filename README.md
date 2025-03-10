@@ -180,6 +180,28 @@ class ViewContract extends ViewRecord
 
 `actions()` will return an array of `Filament\Actions\Action` objects, that mean you can use it any place that accept `Action` object.
 
+### View actions as group
+
+you can view available actions in any resource page as group :
+
+```php
+class ViewContract extends ViewRecord
+{
+    protected static string $resource = ContractResource::class;
+
+    protected function getHeaderActions(): array
+    {
+        return [
+            StateActionsService::make((static::$resource)::getModel(), 'importance')
+                    ->excludeStates($this->record->importance)
+                    ->actionsAsGroup($this->record)
+        ];
+    }
+}
+```
+
+if you don't pass the `record` it will not display the current state.
+
 ### Config ordering actions
 if you went to display available actions in specific order you can do so by overriding `$order` attribute in each State.
 

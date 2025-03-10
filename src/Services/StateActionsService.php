@@ -2,6 +2,8 @@
 
 namespace Abather\SpatieLaravelModelStatesActions\Services;
 
+use Filament\Actions\ActionGroup;
+
 class StateActionsService extends _BaseService
 {
     public function tableActions(): array
@@ -42,5 +44,20 @@ class StateActionsService extends _BaseService
         ksort($actions);
 
         return $actions;
+    }
+
+    public function actionsAsGroup($record = null, $button = true): ActionGroup
+    {
+        return ActionGroup::make(
+            $this->actions()
+        )
+            ->when($button, function ($component) {
+                $component->button();
+            })
+            ->when($record, function ($component) use ($record) {
+                $component->color(fn () => $record->importance->color())
+                    ->label(fn () => $record->importance->label())
+                    ->icon(fn () => $record->importance->icon());
+            });
     }
 }
