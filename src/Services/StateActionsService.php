@@ -55,9 +55,9 @@ class StateActionsService extends _BaseService
                 $component->button();
             })
             ->when($record, function ($component) use ($record) {
-                $component->color(fn () => $record->importance->color())
-                    ->label(fn () => $record->importance->label())
-                    ->icon(fn () => $record->importance->icon());
+                $component->color(fn () => $record->{$this->field}->color())
+                    ->label(fn () => $record->{$this->field}->label())
+                    ->icon(fn () => $record->{$this->field}->icon());
             });
     }
 }
