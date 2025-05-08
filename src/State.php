@@ -209,7 +209,7 @@ abstract class State extends base
 
         foreach (get_class($record)::getStatesFor($field)->toArray() as $state) {
             if (static::isAuthorized($user, $record, $state)) {
-                $status[$state] = $state::title();
+                $status[$state] = $state::label();
             }
         }
 
