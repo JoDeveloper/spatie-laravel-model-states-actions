@@ -179,6 +179,15 @@ abstract class State extends base
             ->options(static::getStatesForSelect($model, $field));
     }
 
+    public static function formSelectWithAuth(Model $record, User $user, ?string $field = null, ?string $label = null): Select
+    {
+        $field = static::getStateKeyName($field);
+
+        return Select::make($field)
+            ->label($label ?? __($field))
+            ->options(static::getStatesForSelectWithAuthorization($record, $user, $field));
+    }
+
     public static function getStatesForSelect(string $model, ?string $field = null): array
     {
         $field = static::getStateKeyName($field);
@@ -187,6 +196,21 @@ abstract class State extends base
 
         foreach ($model::getStatesFor($field)->toArray() as $state) {
             $status[$state] = $state::title();
+        }
+
+        return $status;
+    }
+
+    public static function getStatesForSelectWithAuthorization(Model $record, User $user, ?string $field = null): array
+    {
+        $field = static::getStateKeyName($field);
+
+        $status = [];
+
+        foreach (get_class($record)::getStatesFor($field)->toArray() as $state) {
+            if (static::isAuthorized($user, $record, $state)) {
+                $status[$state] = $state::title();
+            }
         }
 
         return $status;
@@ -219,16 +243,18 @@ abstract class State extends base
         return static::$requires_confirmation;
     }
 
-    public static function isAuthorized($user, $record): bool
+    public static function isAuthorized($user, $record, ?string $finalState = null): bool
     {
-        if (! $record->{static::getStateKeyName()}->canTransitionTo(static::class)) {
+        $finalState = $finalState ?? static::class;
+
+        if (!$record->{$finalState::getStateKeyName()}->canTransitionTo($finalState)) {
             return false;
         }
 
-        if (static::skipAuthorization()) {
+        if ($finalState::skipAuthorization()) {
             return true;
         }
 
-        return $user->can(static::abilityName(), $record);
+        return $user->can($finalState::abilityName(), $record);
     }
 }
